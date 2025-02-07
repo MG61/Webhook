@@ -17,8 +17,8 @@ app = Flask(__name__)
 application = app # Явно указываем WSGI application
 
 # Установка вебхука при старте приложения (теперь не нужно явно удалять и устанавливать каждый раз)
-bot.remove_webhook() # Убираем, т.к. nginx проксирует запросы и не нужно дублировать
-bot.set_webhook(WEBHOOK_URL) # Убираем, т.к. вебхук устанавливается один раз через Telegram Bot API
+# bot.remove_webhook() # Убираем, т.к. nginx проксирует запросы и не нужно дублировать
+# bot.set_webhook(WEBHOOK_URL) # Убираем, т.к. вебхук устанавливается один раз через Telegram Bot API
 
 # Обработчик команды /start
 @bot.message_handler(commands=['start'])
