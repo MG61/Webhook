@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000" # Проброс порта для Gunicorn внутри контейнера
+    environment:
+      - API_TELEGRAM=7844827384:AAG-0rimxEsxUopDGYE7DIclY1RZKEi0dmU # Переменная окружения для токена бота
+      - WEBHOOK_URL=https://s627700.foxcdn.net/webhook # Укажите ваш домен
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"   # HTTP
+      - "443:443" # HTTPS
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - certbot-data:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    depends_on:
+      - app
+    restart: always
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - certbot-data:/etc/letsencrypt # Общий volume для сертификатов
+      - /var/www/certbot:/var/www/certbot # Общий volume для webroot
+    depends_on:
+      - nginx
+    entrypoint: "/bin/sh -c 'trap exit TERM && certbot certonly --webroot -w /var/www/certbot --email abramenko0431@gmail.com --agree-tos --no-eff-email -d s627700.foxcdn.net && nginx -s reload; while :; do sleep 6h & wait $${!}; done'"
+    environment:
+      - YOUR_DOMAIN=s627700.foxcdn.net # Домен для сертификата
+      - YOUR_EMAIL=abramenko0431@gmail.com # Ваша электронная почта для Let's Encrypt
+
+volumes:
+  certbot-data: # Volume для хранения данных Let's Encrypt

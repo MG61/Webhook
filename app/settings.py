@@ -1,0 +1,4 @@
+import os
+
+API_TELEGRAM = "7844827384:AAG-0rimxEsxUopDGYE7DIclY1RZKEi0dmU"
+WEBHOOK_URL = os.environ.get("WEBHOOK_URL")
